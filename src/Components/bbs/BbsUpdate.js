@@ -13,7 +13,7 @@ function BbsUpdate() {
 
 	const location = useLocation();
 	const { bbs } = location.state;
-	
+
 	const boardId = bbs.boardId;
 	const [title, setTitle] = useState(bbs.title);
 	const [content, setContent] = useState(bbs.content);
@@ -48,7 +48,7 @@ function BbsUpdate() {
 			"Authorization": `Bearer ${localStorage.getItem("bbs_access_token")}`
 		});
 	}, []);
-	
+
 
 	/* 파일 업로드 */
 	const fileUpload = async (boardId) => {
@@ -62,13 +62,17 @@ function BbsUpdate() {
 				console.log("[file.js] fileUpload() success :D");
 				console.log(resp.data);
 				alert("게시물과 파일을 성공적으로 수정했습니다. :D");
-				
+
 				// 새롭게 등록한 글 상세로 이동
-				navigate(`/bbsdetail/${boardId}`); 
+				navigate(`/bbsdetail/${boardId}`);
 			})
 			.catch((err) => {
 				console.log("[FileData.js] fileUpload() error :<");
-				console.log(err);
+				console.log(err, err.code);
+
+				if(err.code === 'ERR_BAD_REQUEST') {
+					alert("지워하지 않은 확장자 파일을 업로드 하였습니다.")
+				}
 			});
 	};
 
@@ -88,8 +92,8 @@ function BbsUpdate() {
 	const updateBbs = async () => {
 
 		const req = {
-			id: auth, 
-			title: title, 
+			id: auth,
+			title: title,
 			content: content
 		}
 
